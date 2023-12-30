@@ -4,17 +4,14 @@ module.exports = (sequelize, type) => {
             type: type.STRING,
             primaryKey: true,
         },
-        pass_hash: type.STRING,
         first_name: type.STRING,
         last_name: type.STRING,
         email: type.STRING,
-
-
+        pass_hash: type.STRING,
     }, {
-        updatedAt: 'updated_at',
         createdAt: 'created_at',
+        updatedAt: 'updated_at',
     });
 
     return User;
 };
-

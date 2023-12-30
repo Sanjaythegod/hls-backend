@@ -14,3 +14,55 @@ functions:
       - httpApi:
           path: /
           method: get
+          cors: true
+  healthCheck:
+    handler: index.healthCheck
+    events:
+      - httpApi:
+          path: /healthCheck
+          method: get
+          cors: true
+  createUser:
+    handler: rest/Users/controller.createUser
+    events:
+      - httpApi:
+          path: /createUser
+          method: post
+          cors: true
+  login:
+    handler: rest/Users/controller.login
+    events:
+      - httpApi:
+          path: /login
+          method: post
+          cors: true
+  getAllUsers:
+    handler: rest/Users/controller.getAllUsers
+    events:
+      - httpApi:
+          path: getAllUsers
+          method: get
+          cors: true
+  getAllProducts:
+    handler: rest/Products/controller.getAllProducts
+    events:
+      - httpApi:
+          path: getAllProducts
+          method: get
+          cors: true
+  getOneProduct:
+    handler: rest/Products/controller.getOneProduct
+    events:
+      - httpApi:
+          path: products/{id}
+          method: get
+          cors: true
+  checkout:
+    handler: rest/Orders/controller.checkout
+    events:
+      - httpApi:
+          path: checkout
+          method: post
+          cors: true
+plugins:
+  - serverless-offline

@@ -9,9 +9,10 @@ module.exports = (sequelize, type) => {
         price: type.STRING,
         stock_quantity: type.STRING,
         rating: type.STRING,
-
+        featured: type.INTEGER
 
     }, {
+
         updatedAt: 'updated_at',
         createdAt: 'created_at',
     });

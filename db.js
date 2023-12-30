@@ -4,7 +4,7 @@ const Op = Sequelize.Op;
 //models
 const UsersModel = require('./rest/Users/model')
 const ProductsModel = require('./rest/Products/model')
-const OrdersModel = require('./rest/Products/model')
+const OrdersModel = require('./rest/Orders/model')
 
 
 const sequelize = new Sequelize(
@@ -15,8 +15,11 @@ const sequelize = new Sequelize(
         dialect: 'mysql',
         host: 'hls-products.cpxfz0aupufi.us-east-1.rds.amazonaws.com',
         port: '3306',
+        define: {
+            timestamps: false,
+        },
         dialectOptions: { decimalNumbers: true },
-        logging: false,
+        logging: console.log,
     }
 );
 

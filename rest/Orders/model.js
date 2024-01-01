@@ -12,6 +12,7 @@ module.exports = (sequelize, type) => {
         city: type.STRING,
         state: type.STRING,
         country: type.STRING,
+        is_fulfilled: type.STRING,
 
 
     }, {

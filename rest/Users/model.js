@@ -8,6 +8,7 @@ module.exports = (sequelize, type) => {
         last_name: type.STRING,
         email: type.STRING,
         pass_hash: type.STRING,
+        account_type: type.STRING,
     }, {
         createdAt: 'created_at',
         updatedAt: 'updated_at',

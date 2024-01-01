@@ -1,14 +1,12 @@
 require('dotenv').config()
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 const middy = require('middy')
-const { authorize } = require('../../validator')
+const { authorize, authorizeAdmin } = require('../../validator')
 const connectToDatabase = require("../../db");
+const uuid = require("uuid");
+const { HTTPError } = require("../httpResp");
 
-const tempItems = new Map([
-    [1, { priceInCents: 50, name: 'Red' }],
-    [2, { priceInCents: 100, name: 'Blue' }]
 
-])
 
 module.exports.checkout = middy(async (event) => {
     const input = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
@@ -16,7 +14,7 @@ module.exports.checkout = middy(async (event) => {
     const productObj = await Products.findAll();
 
     // Create a new Map based on the data from the database
-    const storeItems = new Map(productObj.map(product => [product.id, { priceInCents: product.price*100, name: product.name }]));
+    const storeItems = new Map(productObj.map(product => [product.id, { priceInCents: product.price * 100, name: product.name }]));
 
 
 
@@ -66,3 +64,67 @@ module.exports.checkout = middy(async (event) => {
         };
     }
 }).use(authorize())
+
+module.exports.createOrder = middy(async (event, context) => {
+    try {
+        const input = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
+        const { Orders } = await connectToDatabase();
+        const dataObject = Object.assign(
+            input,
+            { id: uuid.v4(), user_id: context.id.id },
+        );
+
+        const orderModel = await Orders.create(dataObject);
+
+        return {
+            statusCode: 200,
+            headers: {
+                "Content-Type": "text/plain",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Credentials": true,
+            },
+            body: JSON.stringify(orderModel),
+        }
+    } catch (error) {
+        return {
+            statusCode: error.statusCode || 500,
+            headers: {
+                "Content-Type": "text/plain",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Credentials": true,
+            },
+            body: JSON.stringify({
+                error: error.message || "Could not create the user.",
+            }),
+        };
+    }
+}).use(authorize())
+
+module.exports.getAllOrders = middy(async (event, context) => {
+    const { Orders } = await connectToDatabase()
+    const orderObj = await Orders.findAll();
+
+    try {
+        return {
+            statusCode: 200,
+            headers: {
+                "Content-Type": "text/plain",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Credentials": true,
+            },
+            body: JSON.stringify(orderObj),
+        }
+    } catch (error) {
+        return {
+            statusCode: error.statusCode || 500,
+            headers: {
+                "Content-Type": "text/plain",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Credentials": true,
+            },
+            body: JSON.stringify({
+                error: error.message || "Could not execute the function",
+            }),
+        };
+    }
+}).use(authorizeAdmin())

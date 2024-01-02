@@ -13,8 +13,10 @@ module.exports = (sequelize, type) => {
         state: type.STRING,
         country: type.STRING,
         is_fulfilled: type.STRING,
-
-
+        user_name: type.STRING,
+        user_email: type.STRING,
+        product_name: type.STRING,
+        product_price: type.STRING,
     }, {
 
         updatedAt: 'updated_at',
